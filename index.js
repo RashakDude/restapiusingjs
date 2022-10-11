@@ -9,6 +9,10 @@ let colorRepo = require('./repos/colorRepo');
 // Use the express Router object
 let router = express.Router();
 
+// Configure middleware to support JSON data
+// while parsing in request object
+app.use(express.json());
+
 // Create GET to return a list of all the pies
 // It is a good practice to pass the JSON object
 // Which contains status code and status message
@@ -78,6 +82,97 @@ router.get('/pies/:id', function(req, res, next) {
         next(err);
     });
 });
+
+// Insert a data to json file
+router.post('/pies', function(req, res, next) {
+    pieRepo.insert(req.body, function (data) {
+        res.status(201).json({
+            "status": 201,
+            "statusText": "Created",
+            "message": "Pie added successfully",
+            "data" : data
+        });
+    }, function(err) {
+        next(err);
+    });
+});
+
+// Updating a data using PUT method
+router.put('/pies/:id', function(req, res, next) {
+    pieRepo.getByID(req.params.id, function(data) {
+        if(data) {
+            pieRepo.update(req.body, req.params.id, function (data) {
+                res.status(200).json({
+                    "status": 200,
+                    "statusText": "Updated",
+                    "message": "Pie '" + req.params.id + "'updated",
+                    "data" : data
+                });
+            });
+        } 
+        else {
+            res.status(404).json({
+                "status": 404,
+                "statusText": "Not found",
+                "message": "The pie '" + req.params.id + "' could not be found",
+            });
+        }
+    },function(err) {
+        next(err);
+    });
+});
+
+
+// Partial updating a data using PATCH method
+router.patch('/pies/:id', function(req, res, next) {
+    pieRepo.getByID(req.params.id, function(data) {
+        if(data) {
+            pieRepo.update(req.body, req.params.id, function (data) {
+                res.status(200).json({
+                    "status": 200,
+                    "statusText": "Updated",
+                    "message": "Pie '" + req.params.id + "'updated",
+                    "data" : data
+                });
+            });
+        } 
+        else {
+            res.status(404).json({
+                "status": 404,
+                "statusText": "Not found",
+                "message": "The pie '" + req.params.id + "' could not be found",
+            });
+        }
+    },function(err) {
+        next(err);
+    });
+});
+
+// Deleting a data using DELETE method
+router.delete('/pies/:id', function(req, res, next) {
+    pieRepo.getByID(req.params.id, function(data) {
+        if(data) {
+            pieRepo.delete(req.params.id, function (data) {
+                res.status(200).json({
+                    "status": 200,
+                    "statusText": "Deleted",
+                    "message": "Pie has been deleted",
+                    "data" : "Pie '" + req.params.id + "' deleted"
+                });
+            });
+        } 
+        else {
+            res.status(404).json({
+                "status": 404,
+                "statusText": "Not found",
+                "message": "The pie '" + req.params.id + "' could not be found",
+            });
+        }
+    },function(err) {
+        next(err);
+    });
+});
+
 
 // Configure router so all routes are prefixed with /api/v1
 app.use('/api/', router);

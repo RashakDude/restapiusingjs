@@ -1,14 +1,1 @@
-[
-    {
-        "id": 1, 
-        "name": "Apple"
-    },
-    {
-        "id": 2, 
-        "name": "Cherry"
-    },
-    {
-        "id": 3, 
-        "name": "Peach"
-    }
-]
+[{"id":1,"name":"Apple"},{"id":2,"name":"Cherry"},{"id":3,"name":"Blueberry"}]
