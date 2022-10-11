@@ -177,6 +177,28 @@ router.delete('/pies/:id', function(req, res, next) {
 // Configure router so all routes are prefixed with /api/v1
 app.use('/api/', router);
 
+// Added a personalised error Builder function
+function errorBuilder(err) {
+    return {
+        "status": 500,
+        "statusText": "Internal Server Error",
+        "message": err.message,
+        "Error Number": err.errno,
+        "Error call": err.syscall
+    };
+}
+
+// Configure exception logger
+app.use(function(err, req, res, next) {
+    console.log(errorBuilder(err));
+    next(err);
+})
+
+// Configure exception handling middleware at the last
+app.use(function(err, req, res, next) {
+    res.status(500).json(errorBuilder(err));
+});
+
 var server = app.listen(5000, function () {
     console.log('Node server is running on http://localhost:5000');
 });
