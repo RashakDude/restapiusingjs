@@ -39,6 +39,24 @@ router.get('/colors', function(req, res, next) {
     });
 });
 
+// Seach an object using ?params=param.name,id,etc.
+router.get('/pies/search', function(req, res, next) {
+    let searchObject = {
+        "id": req.query.id,
+        "name": req.query.name
+    };
+    pieRepo.search(searchObject, function (data) {
+        res.status(200).json({
+            "status": 200,
+            "statusText": "OK",
+            "message": "All pies retreieved",
+            "data" : data
+        });
+    }, function(err) {
+        next(err);
+    });
+});
+
 // Get a single pie using /pies/{pie_id}
 router.get('/pies/:id', function(req, res, next) {
     pieRepo.getByID(req.params.id, function(data) {
