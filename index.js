@@ -6,6 +6,9 @@ let app = express();
 let pieRepo = require('./repos/pieRepo');
 let colorRepo = require('./repos/colorRepo');
 
+// Import errors
+let errorHelper = require('./helpers/errorHelpers');
+
 // Use the express Router object
 let router = express.Router();
 
@@ -177,27 +180,17 @@ router.delete('/pies/:id', function(req, res, next) {
 // Configure router so all routes are prefixed with /api/v1
 app.use('/api/', router);
 
-// Added a personalised error Builder function
-function errorBuilder(err) {
-    return {
-        "status": 500,
-        "statusText": "Internal Server Error",
-        "message": err.message,
-        "Error Number": err.errno,
-        "Error call": err.syscall
-    };
-}
+// Configure exception logger to console
+app.use(errorHelper.logErrorsToConsole);
 
-// Configure exception logger
-app.use(function(err, req, res, next) {
-    console.log(errorBuilder(err));
-    next(err);
-})
+// Configure exception logger to file
+app.use(errorHelper.logErrorsToFile);
 
-// Configure exception handling middleware at the last
-app.use(function(err, req, res, next) {
-    res.status(500).json(errorBuilder(err));
-});
+// Configure client error handler
+app.use(errorHelper.clientErrorHandler);
+
+// Configure catch all exception middleware last
+app.use(errorHelper.errorHandler);
 
 var server = app.listen(5000, function () {
     console.log('Node server is running on http://localhost:5000');
