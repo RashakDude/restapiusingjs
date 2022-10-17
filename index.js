@@ -9,12 +9,18 @@ let colorRepo = require('./repos/colorRepo');
 // Import errors
 let errorHelper = require('./helpers/errorHelpers');
 
+// Adding CORS for Cross Origin Request Allow
+let cors = require('cors');
+
 // Use the express Router object
 let router = express.Router();
 
 // Configure middleware to support JSON data
 // while parsing in request object
 app.use(express.json());
+
+// Configure CORS
+app.use(cors());
 
 // Create GET to return a list of all the pies
 // It is a good practice to pass the JSON object
